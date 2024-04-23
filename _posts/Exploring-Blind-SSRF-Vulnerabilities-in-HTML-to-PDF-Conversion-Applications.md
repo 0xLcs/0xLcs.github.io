@@ -2,6 +2,8 @@
 title: "Exploring Blind SSRF Vulnerabilities in HTML to PDF Conversion Applications"
 date: 2023-04-23
 author: 0xLuc4s
+categories: [ssrf-vulnerabilies]
+tags: [ssrf]
 ---
 
 ## Overview
