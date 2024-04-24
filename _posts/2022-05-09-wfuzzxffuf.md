@@ -1,6 +1,6 @@
 ---
 title: "Wfuzz vs. ffuf: A Detailed Comparison for Cybersecurity"
-date: 2023-04-23 21:30:05
+date: 2022-05-09 21:30:05
 categories: [fuzzing]
 tags: [fuzzing]
 ---
