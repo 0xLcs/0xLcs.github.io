@@ -2,7 +2,7 @@
 title: "Using Portainer for Privilege Escalation in Docker Containers"
 date: 2022-06-15 12:01:07
 categories: [PrivilegeEscalation]
-tags: [Dockers, Containers, PrivilegeEscalation]
+tags: [Dockers, Containers, PrivilegeEscalation, Portainer]
 ---
 
 ## Introduction
@@ -18,18 +18,20 @@ Portainer is a graphical interface that eases container administration, allowing
 ### 1. Accessing Portainer:
 First, access the Portainer portal and verify the available images for use.
 
-### 2. Creating the Container:
-After selecting and copying the ID of the desired image, create a container based on this image. This is done in the container section of Portainer by clicking "Add Container".
+### 2. Creating the Volume and Container:
+Create a Volume with these configurations beloew:  
+- **Additional Volume Options:**
+  - **device:** `/`
+  - **o:** `bind`
+  - **type:** `none`
+  
+  After that create a New Container, select and copy the ID of the any image, create a container based on this image. This is done in the container section of Portainer by clicking "Add Container".
 
 ### 3. Configuring the Container:
 While configuring the container:
 - Name the container and insert the copied image ID (ensure this ID is a previously created SHA hash).
 - Choose the console to be interactive and TTY (-i -t).
-- Important: configure the volume to mount the host's /root directory to /mnt/root in the container.
-- **Additional Volume Options:**
-  - **device:** `/`
-  - **o:** `bind`
-  - **type:** `none`
+- Important: configure the volume mapping to mount the host's /root directory to /mnt/root in the container
 
 ### 4. Setting Privileges:
 Ensure to set the container to operate in "Privileged Mode" in the Security/Host section. This allows the container extended access to the host system.
