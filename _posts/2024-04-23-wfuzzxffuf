@@ -2,7 +2,7 @@
 title: "Wfuzz vs. ffuf: A Detailed Comparison for Cybersecurity"
 date: 2023-04-23 21:30:05
 categories: [fuzzing]
-tags: [fuzzing, wfuzz]
+tags: [fuzzing]
 ---
 
 In the realm of cybersecurity, choosing the right tools is crucial for effective penetration testing and security audits. Among the tools commonly used for web application fuzzing are Wfuzz and ffuf. Both are designed to help security professionals identify vulnerabilities in web applications, but they have significant differences that can influence the choice of one over the other. In this article, we will explore why Wfuzz may be considered superior to ffuf in certain contexts.
