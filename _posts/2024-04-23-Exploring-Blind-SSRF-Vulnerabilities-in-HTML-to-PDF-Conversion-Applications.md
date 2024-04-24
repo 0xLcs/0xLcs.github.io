@@ -92,7 +92,7 @@ We start an HTTP server and send an HTML file that waits for a response and deco
 
 We decode the information using Base64 to view the data received, which includes commands and system user information.
 
-echo "<BASE64_DATA>" | base64 -d
+echo "BASE64_DATA" | base64 -d
 
 
 ## Blind SSRF Exploitation Scenario
