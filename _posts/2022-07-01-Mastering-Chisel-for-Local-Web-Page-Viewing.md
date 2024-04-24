@@ -5,8 +5,6 @@ categories: [portforwarding, tunnel]
 tags: [chisel, portforwarding, pentest, OSCP]
 ---
 
-# Mastering Chisel for Local Web Page Viewing: A Comprehensive Guide
-
 Chisel is a powerful tool that allows developers to safely expose local resources to the internet in a controlled manner. It operates as a reverse tunnel, facilitating the interaction with applications running in local development environments without the need to expose them directly to the web. This detailed guide will show you how to use Chisel to view web pages locally, with a deep dive into its advanced commands.
 
 ## What is Chisel?
