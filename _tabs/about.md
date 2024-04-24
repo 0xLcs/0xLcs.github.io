@@ -5,12 +5,12 @@ order: 4
 ---
 
 **Github**: [https://app.hackthebox.com/users/1864705](https://github.com/0xLcs)  
-**HackTheBox Profile** (if you like me, please give me :) thx )): [https://app.hackthebox.com/users/1864705](https://app.hackthebox.com/users/1864705)  
+**HackTheBox Profile** (if you like me, please give me Respect :) thx )): [https://app.hackthebox.com/users/1864705](https://app.hackthebox.com/users/1864705)  
 **LinkedIN**: [https://www.linkedin.com/in/lucas-morato/](https://www.linkedin.com/in/lucas-morato/)  
 
 ## About Me: Adventures of an Elite Pro Hacker
-- **Elite Pro Hacker Status:** At Hack The Box, I've earned the title of Elite Pro Hacker, which, in layman's terms, means I've spent more hours deciphering codes than what might be considered normal. It’s a source of pride, but also a daily reminder that there’s always more to learn and new challenges to tackle!
-I am currently ranked in the top 10 in Brazil on the Hack The Box platform.
+- **Elite Pro Hacker Status:** At Hack The Box, I've earned the title of Elite Pro Hacker, which, in layman's terms, means I've spent more hours deciphering codes than what might be considered normal. It’s a source of pride, but also a daily reminder that there’s always more to learn and new challenges to tackle!  
+I am currently ranked in the `top 10 in Brazil` on the Hack The Box platform.
 
 ## Education and Training: A Journey of Constant Learning
 - **Higher Education:** My journey began with a degree in Web Design from Universidade Anhembi Morumbi. Since then, I’ve dived into a variety of fields, collecting postgraduate degrees like someone collects stamps—from Cybersecurity, Data-Science, UX to Marketing, because diversity in learning is never too much!
