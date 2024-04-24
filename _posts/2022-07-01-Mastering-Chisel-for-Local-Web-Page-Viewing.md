@@ -1,5 +1,5 @@
 ---
-title: "Using Portainer for Privilege Escalation in Docker Containers"
+title: "Mastering Chisel for Local Web Page Viewing: A Comprehensive Guide"
 date: 2022-07-01 14:06:24
 categories: [portforwarding, tunnel]
 tags: [chisel, portforwarding, pentest, OSCP]
