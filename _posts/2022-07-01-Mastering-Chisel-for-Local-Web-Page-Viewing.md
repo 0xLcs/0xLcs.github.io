@@ -22,13 +22,13 @@ Before exploring the commands, you need to install and configure Chisel. Follow 
 2. **Running the Chisel Server:**
    - On the server that will receive the connections, run:
     
-      chisel server --port 8080 --reverse
+      ```chisel server --port 8080 --reverse```
      
 
 3. **Connecting the Chisel Client:**
    - On your local machine, connect to the server using:
      
-     chisel client http://server-IP:8080 R:8080:localhost:80
+     ```chisel client http://server-IP:8080 R:8080:localhost:80```
      
 
 ## Advanced Commands and Their Functions
@@ -37,7 +37,7 @@ Before exploring the commands, you need to install and configure Chisel. Follow 
 
 **Command:**
 
-   chisel client http://server-IP:8080 R:remote-port:localhost:local-port
+   ```chisel client http://server-IP:8080 R:remote-port:localhost:local-port```
 
 **Description:**
 This command creates a tunnel between a specific server port and a port on your local machine. It's useful for exposing local web applications to a broader network.
@@ -45,14 +45,14 @@ This command creates a tunnel between a specific server port and a port on your 
 **Example:**
 Suppose you have an application running on port 3000 in your local environment and want to access it externally on port 8080 of the server:
 
-   chisel client http://server-IP:8080 R:8080:localhost:3000
+   ```chisel client http://server-IP:8080 R:8080:localhost:3000```
 
 
 ### 2. Multiple Ports Forwarding
 
 **Command:**
 
-   chisel client http://server-IP:8080 R:8080:localhost:3000 R:5000:localhost:5000
+   ```chisel client http://server-IP:8080 R:8080:localhost:3000 R:5000:localhost:5000```
 
 **Description:**
 Allows the forwarding of multiple ports simultaneously, facilitating the exposure of multiple local services.
@@ -61,20 +61,20 @@ Allows the forwarding of multiple ports simultaneously, facilitating the exposur
 
 **Command:**
 
-   chisel client http://server-IP:8080 --socks5
+   ```chisel client http://server-IP:8080 --socks5```
 
 **Description:**
 Activates a SOCKS5 proxy server on the client side, allowing you to route your internet traffic through the Chisel server. This is useful for testing the appearance of a website from different geographic locations.
 
 **Example:**
 
-   chisel client http://server-IP:8080 --socks5
+   ```chisel client http://server-IP:8080 --socks5```
 
 After execution, configure your browser to use the SOCKS proxy at `localhost:1080`.
 
 **To configure proxychains to use this SOCKS5 proxy, add the following line to your `proxychains.conf`:**
 
-   socks5  127.0.0.1 1080
+   ```socks5  127.0.0.1 1080```
 
 
 ## Conclusion
