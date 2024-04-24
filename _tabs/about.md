@@ -4,9 +4,21 @@ icon: fas fa-info-circle
 order: 4
 ---
 
+# Introduction
+
+- **Name:** Lucas
+- **Age:** 35
+- **Passions:** Coffee and hacking
+- **Activities:** Researching, solving CTFs (Capture The Flag), and cybersecurity problem-solving
+- **Tattoos:** Three, with plans for the next one to be the word **l33t**
+- **Interests:** Deeply in love with Hack The Box and its community
+- **Community Engagement:** Actively helping out on Discord
+- **Fun Fact:** I have a rabbit who's my master; he plans, I execute.
+
 **Github**: [https://app.hackthebox.com/users/1864705](https://github.com/0xLcs)  
 **HackTheBox Profile** (if you like me, please give me Respect :) thx )): [https://app.hackthebox.com/users/1864705](https://app.hackthebox.com/users/1864705)  
 **LinkedIN**: [https://www.linkedin.com/in/lucas-morato/](https://www.linkedin.com/in/lucas-morato/)  
+**Discord**: #0xlcs
 
 ## About Me: Adventures of an Elite Pro Hacker
 - **Elite Pro Hacker Status:** At Hack The Box, I've earned the title of Elite Pro Hacker, which, in layman's terms, means I've spent more hours deciphering codes than what might be considered normal. It’s a source of pride, but also a daily reminder that there’s always more to learn and new challenges to tackle!  
