@@ -4,8 +4,6 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-# whoami
-
 - **Name:** Lucas
 - **Age:** 35
 - **Passions:** Coffee and hacking
