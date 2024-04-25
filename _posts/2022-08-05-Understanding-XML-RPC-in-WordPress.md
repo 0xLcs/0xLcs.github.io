@@ -50,7 +50,7 @@ post[0].content
 ```
 
 Result:
-```html
+```php
 '<!-- wp:paragraph -->\n<p>Post content</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:php-everywhere-block/php {"code":"PD9waHAgcGhwaW5mbygpOyA/Pg==,"version":"3.0.0"} /-->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p></p>\n<!-- /wp:paragraph -->'
 ```
 
