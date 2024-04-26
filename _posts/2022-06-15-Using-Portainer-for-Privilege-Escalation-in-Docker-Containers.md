@@ -19,7 +19,7 @@ Portainer is a graphical interface that eases container administration, allowing
 First, access the Portainer portal and verify the available images for use.
 
 ### 2. Creating the Volume and Container:
-Create a Volume with these configurations below:  
+Create a Volume with these configurations (Add Drive Option:) below:  
 - **Additional Volume Options:**
   - **device:** `/`
   - **o:** `bind`
