@@ -24,6 +24,14 @@ Create a Volume with these configurations (Add Drive Option:) below:
   - **device:** `/`
   - **o:** `bind`
   - **type:** `none`
+
+ This setup allows the container to directly access a path in the host's file system. Here's a breakdown of each part:
+
+- **device:** This is the path on the host's file system. `/` refers to the root directory of the host.
+- **o: bind:** This indicates the mounting method, which in this case is "bind". It means that the directory specified in `device` will be mounted directly into the container.
+- **type: none:** This specifies that it is not a block device being mounted, but rather a directory or file.
+
+  These settings are used to ensure that the container has access to specific files or directories on the host, which can be useful for various purposes such as data persistence, managing configuration files, or logs, among others.
   
   After that create a New Container, select and copy the ID of the any image, create a container based on this image. This is done in the container section of Portainer by clicking "Add Container".
 
