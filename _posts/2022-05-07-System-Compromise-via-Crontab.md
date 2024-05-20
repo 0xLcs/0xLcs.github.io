@@ -5,9 +5,6 @@ categories: [vulnerabilities]
 tags: [vulnerabilities, crontabs, persistence]
 ---
 
-
-# Investigation and Mitigation of a System Compromise via Crontab
-
 ## Introduction
 
 In the world of information security, detecting and mitigating malicious activities is essential to protect the integrity and confidentiality of systems. Recently, we encountered an intriguing case of system compromise through a crontab command. This article details the discovery, analysis, and mitigation measures taken to resolve the issue.
