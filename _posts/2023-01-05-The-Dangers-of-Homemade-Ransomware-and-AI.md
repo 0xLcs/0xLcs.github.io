@@ -236,7 +236,7 @@ Traditional antivirus may not immediately detect these scripts because:
 | Malwarebytes        | Ransom.FileCryptor.Python | MaxSecure | Win.MxResIcn.Heur.Gen |
 | Sangfor Engine Zero | Trojan.Win32.Save.a       | SecureAge | Malicious             |
 
-None of the other antivirus software detected the script.
+None of the other antivirus software detected the script.  
 
 ### Conclusion  
 This article illustrates the dangers of homemade ransomware and how technology can be used to create encryption tools that, when misused, can have devastating consequences. The example of the `cow` folder shows how a simple script can encrypt data and demand a ransom for recovery. It is essential to remember that this content is for educational purposes and aims to raise awareness about the capabilities and risks of modern technologies.
