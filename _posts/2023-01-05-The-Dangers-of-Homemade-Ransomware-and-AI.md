@@ -231,10 +231,10 @@ Traditional antivirus may not immediately detect these scripts because:
 3. **The scripts are customized.**  Unlike widely disseminated malware, homemade scripts are unique and not in virus signature databases.
 
 ### Antivirus Detection 
-| Antivirus | Detection Name | Antivirus | Detection Name | 
-| --- | --- | --- | --- | 
-| Malwarebytes | Ransom.FileCryptor.Python | MaxSecure | Win.MxResIcn.Heur.Gen | 
-| Sangfor Engine Zero | Trojan.Win32.Save.a | SecureAge | Malicious | 
+| Antivirus           | Detection Name            | Antivirus | Detection Name        |
+|---------------------|---------------------------|-----------|-----------------------|
+| Malwarebytes        | Ransom.FileCryptor.Python | MaxSecure | Win.MxResIcn.Heur.Gen |
+| Sangfor Engine Zero | Trojan.Win32.Save.a       | SecureAge | Malicious             |
 
 None of the other antivirus software detected the script.
 
