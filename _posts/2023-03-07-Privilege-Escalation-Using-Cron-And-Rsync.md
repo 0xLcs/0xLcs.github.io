@@ -87,6 +87,18 @@ To ensure the changes take effect, we restarted the system:
 sudo reboot
 ```
 
+Although the cron job is configured to run at boot, it is not necessary to reboot the system. We can ensure that the backup script is running and manually call the malicious script. First, we check if the backup script is running:
+
+```bash
+ps aux | grep backup
+```
+
+If the backup script is not running, we can start it manually:
+
+```bash
+sudo /usr/local/bin/backup.sh &
+```
+
 #### Step 6: Verifying the Execution of the Malicious Script 
 
 After rebooting, we checked the log file to confirm the execution of the malicious script:
