@@ -6,7 +6,6 @@ categories: [privilege-escalation, linux]
 tags: [redteam, privilege-escalation, linux]
 ---
 
-### Privilege Escalation Using Cron and Rsync
 In production environments, cron jobs are often used to schedule maintenance tasks and data backups. However, improper configuration can introduce vulnerabilities that can be exploited for privilege escalation. This article describes a realistic scenario where a cron job configured to use `rsync` can be exploited to gain elevated privileges.
 #### Introduction 
 
